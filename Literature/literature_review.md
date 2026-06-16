@@ -1,52 +1,31 @@
-# Literature Review
+# Literature Review for CVRP / VRPTW Project
 
-## Purpose of the Literature Review
+## Purpose
 
-The purpose of this literature review is to connect our project to established Operations Research research on vehicle routing.
+This literature review supports the mathematical model for the Dr. Oetker to Lidl delivery project. The project is formulated as a Vehicle Routing Problem with capacity and time-window constraints.
 
-Our project is based on a Capacitated Vehicle Routing Problem with additional operational constraints such as delivery time windows, heterogeneous vehicle capacities, service times, and time-dependent travel times. The literature helps us justify why these model components are relevant and how similar routing problems are usually formulated and solved.
+## Source Summary Table
 
-## Main Literature Areas
+| Topic | Source | Main idea | How it supports our project |
+|---|---|---|---|
+| CVRP | [Add source here] | CVRP models routes with vehicle capacity limits. | Supports our capacity constraints and depot-store-depot route structure. |
+| VRPTW | [Add source here] | VRPTW extends VRP with customer time windows and service times. | Supports our delivery time windows and service time assumptions. |
+| Heterogeneous Fleet VRP | [Add source here] | Different vehicle types can have different capacities and costs. | Supports possible use of trucks with different pallet capacity. |
+| Heuristics for VRP | [Add source here] | Heuristics are used when exact optimization becomes difficult. | Supports our clustering/simple route construction approach. |
+| Logistics / food distribution | [Add source here] | Retail logistics requires reliable routing under time and capacity limits. | Supports the real-world motivation of the Dr. Oetker and Lidl case. |
 
-### 1. Vehicle Routing Problem
+## Link to Mathematical Model
 
-The Vehicle Routing Problem is the general problem class behind our project. It deals with planning routes for vehicles that start from a depot, visit customers, and return to the depot. The objective is usually to minimize total distance, total time, total cost, or another operational performance measure.
+Our project follows the standard OR structure: decision variables, objective function, and constraints. In the course material, OR problems are defined by choices, a clear goal, and rules that limit the decision. :contentReference[oaicite:1]{index=1}
 
-### 2. Capacitated Vehicle Routing Problem
+For our project:
 
-The Capacitated Vehicle Routing Problem adds vehicle capacity constraints. This is directly relevant because our project models Lidl store demand in pallets and uses trucks with limited pallet capacity.
+- Decision variables: whether vehicle k travels from location i to location j.
+- Objective: minimize total transportation cost.
+- Constraints: vehicle capacity, customer demand, service times, time windows, route duration, and depot return.
 
-### 3. Vehicle Routing Problem with Time Windows
+This also matches the course model-formulation logic, where OR models transform real-world problems into variables, constraints, parameters, and an objective function. :contentReference[oaicite:2]{index=2}
 
-The Vehicle Routing Problem with Time Windows considers that customers can only be served within defined time intervals. This is relevant because our model assumes a delivery time window for the Lidl stores.
+## Reference Documentation
 
-### 4. Heterogeneous Fleet Routing
-
-Our project does not assume that all vehicles are identical. Instead, the mathematical formulation distinguishes between heavy trucks and medium trucks with different capacity limits. This connects the project to heterogeneous vehicle routing problems.
-
-### 5. Time-Dependent Vehicle Routing
-
-Travel times in real distribution systems are not always constant. Traffic conditions can change during the day. Our model reflects this by using congestion multipliers for different time periods.
-
-### 6. Heuristics and Solver-Based Approaches
-
-Vehicle routing problems become difficult as the number of customers and constraints increases. Therefore, both exact methods and heuristic approaches are relevant. Exact methods are useful for small or structured instances, while heuristics can provide good feasible solutions when the model becomes too large or complex.
-
-## Relevance for Our Project
-
-The literature supports our project in the following ways:
-
-- It helps define the project as a vehicle routing problem.
-- It justifies capacity constraints based on pallet demand.
-- It supports the use of time windows and route duration limits.
-- It supports the distinction between different vehicle types.
-- It explains why routing problems are computationally difficult.
-- It motivates the possible use of heuristics or solver-based methods.
-
-## Literature Gaps and Open Points
-
-- More literature is needed on time-dependent vehicle routing.
-- More literature is needed on heterogeneous vehicle routing.
-- More practical sources are needed for food and retail distribution.
-- More sources are needed to justify cost parameters and traffic assumptions.
-- The final report should clearly separate real input data from assumptions.
+All references should be listed consistently in the bibliography section of the report. If a source is used for a specific formula, definition, or assumption, the report should mention it directly in the relevant section.
