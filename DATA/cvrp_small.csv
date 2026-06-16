@@ -1,0 +1,12 @@
+node_id,node_type,x_coord,y_coord,demand_pallets,service_time_min,time_window_start,time_window_end,demand_class,vehicle_count,vehicle_capacity_pallets
+0,depot,50.0,50.0,0,0,06:30,17:00,depot,2,33
+1,customer,45.21,44.21,3,16,08:00,12:00,low,2,33
+2,customer,39.35,33.06,3,16,08:00,12:00,low,2,33
+3,customer,57.67,55.08,5,20,08:00,12:00,high,2,33
+4,customer,38.4,57.9,4,18,08:00,12:00,medium,2,33
+5,customer,44.7,43.17,4,18,08:00,12:00,medium,2,33
+6,customer,57.72,55.47,4,18,08:00,12:00,medium,2,33
+7,customer,55.82,37.91,5,20,08:00,12:00,high,2,33
+8,customer,59.04,56.78,4,18,08:00,12:00,medium,2,33
+9,customer,33.51,41.1,4,18,08:00,12:00,medium,2,33
+10,customer,69.95,47.63,5,20,08:00,12:00,high,2,33
