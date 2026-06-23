@@ -1,9 +1,8 @@
-# Accorsi and Vigo (2021) — Large-Scale Capacitated Vehicle Routing
+# # Accorsi and Vigo (2023) — Routing One Million Customers in a Handful of Minutes
 
 ## Full reference
 
-Accorsi, L., & Vigo, D. (2021). *A Fast and Scalable Heuristic for the Solution of Large-Scale Capacitated Vehicle Routing Problems.*
-
+Accorsi, L., & Vigo, D. (2023). Routing One Million Customers in a Handful of Minutes.
 
 This source is useful because it looks at vehicle routing from a scalability perspective. Accorsi and Vigo focus on very large CVRP instances and show that practical routing does not only depend on having a mathematically correct model. The algorithm also has to run in a reasonable time, otherwise it is not very useful for real planning.
 

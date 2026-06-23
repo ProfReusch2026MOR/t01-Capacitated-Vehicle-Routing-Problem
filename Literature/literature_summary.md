@@ -1,73 +1,54 @@
 # Literature Summary
 
-This file summarizes books, articles, and research sources related to our Operations Research project on the Capacitated Vehicle Routing Problem.
+This file gives a short overview of the main literature areas used in the project. The detailed discussion is written in `literature_review.md`, while the individual source notes are stored in `source_notes/`.
 
-## Purpose
+The project is not a simple CVRP anymore. It is modeled as a Time-Dependent Heterogeneous Fleet Vehicle Routing Problem with Time Windows (TDHVRPTW). Because of that, the literature has to support more than just vehicle capacity. It also has to support time windows, different vehicle types, demand scenarios, traffic effects, heuristics, and reproducible computational work.
 
-The literature is used to support the theoretical background, model formulation, assumptions, and possible solution approaches for our delivery routing project.
+## Main literature areas
 
-Our project is based on a vehicle routing problem where deliveries start from a depot and serve multiple customer locations while respecting capacity, time, and operational constraints.
+### Vehicle routing and benchmark structure
 
-## Main Literature Areas
+The basic problem belongs to the Vehicle Routing Problem family. More recent CVRP benchmark literature is useful because it shows how routing instances should be documented: nodes, demand, vehicle capacities, matrices, and outputs should be clear enough that another person can understand and reproduce the case.
 
-### 1. Vehicle Routing Problem
+For our project, this mainly supports the way we document the 25 Lidl stores, the depot, the demand scenarios, and the distance and time matrices.
 
-The Vehicle Routing Problem is the general problem class behind our project. It deals with planning routes for vehicles that start from a depot, visit customers, and return to the depot.
+### Heterogeneous fleet routing
 
-Relevant sources:
+Our model includes vehicles with different capacities. Literature on heterogeneous fleet routing supports this part of the model because real delivery fleets are rarely made of identical vehicles. Vehicle type can affect capacity, cost, flexibility, and route feasibility.
 
-- Dantzig, G. B., & Ramser, J. H. (1959). The Truck Dispatching Problem.
-- Laporte, G. (2009). Fifty Years of Vehicle Routing.
-- Toth, P., & Vigo, D. (2014). Vehicle Routing: Problems, Methods, and Applications.
+This is relevant for the Dr. Oetker/Lidl case because the routing decision is not only about store order. It also involves deciding which type of truck can serve which part of the demand efficiently.
 
-### 2. Capacitated Vehicle Routing Problem
+### Time windows and time-dependent travel
 
-The Capacitated Vehicle Routing Problem adds vehicle capacity restrictions. This is directly relevant to our project because customer demand is measured in pallets and vehicles have limited pallet capacity.
+The project uses delivery time windows and congestion-based travel-time assumptions. Literature on VRPTW, dynamic VRPTW, and time-dependent routing helps justify why timing cannot be treated as an afterthought.
 
-Relevant sources:
+A route that is short by distance is not automatically feasible. It also has to respect store delivery windows, service times, and route-duration limits.
 
-- Toth, P., & Vigo, D. (2014). Vehicle Routing: Problems, Methods, and Applications.
-- Uchoa et al. New Benchmark Instances for the Capacitated Vehicle Routing Problem.
-- Accorsi et al. A fast and scalable heuristic for large-scale capacitated vehicle routing problems.
+### Heuristics and scalability
 
-### 3. Vehicle Routing Problem with Time Windows
+The project compares a solver-based approach with heuristic routing logic. Recent heuristic literature supports this decision because practical VRP variants can become difficult quickly once additional constraints are added.
 
-The Vehicle Routing Problem with Time Windows considers delivery time intervals. This is relevant because our project uses delivery time windows for Lidl stores.
+Even though our case has only 25 stores, the same principle applies: if more stores, depots, scenarios, or constraints were added, the model would become harder to solve and interpret. This is why heuristic methods are still relevant.
 
-Relevant sources:
+### Uncertainty and scenarios
 
-- Solomon, M. M. (1987). Algorithms for the Vehicle Routing and Scheduling Problems with Time Window Constraints.
-- Kallehauge, B. Vehicle Routing Problem with Time Windows.
+The project uses different demand scenarios instead of relying on one fixed demand estimate. Literature on stochastic and contextual VRPTW supports this idea at a higher methodological level.
 
-### 4. Time-Dependent Vehicle Routing
+We do not build a full stochastic optimization model, but scenario analysis gives us a practical way to test whether the routing system remains feasible under different demand levels.
 
-Time-dependent vehicle routing considers that travel time can change depending on the time of day. This is relevant because our model includes congestion multipliers for different time intervals.
+### Neural and frontier methods
 
-Relevant sources:
+Some recent literature studies neural or reinforcement-learning approaches for vehicle routing. These papers are useful as background, but they are not the computational basis of our project.
 
-- Adamo et al. (2024). A review of recent advances in time-dependent vehicle routing.
-- Wu et al. (2023). Research on the Time-Dependent Vehicle Routing Problem in Urban Cold Chain Logistics.
+For this project, explainability and reproducibility are more important than using a fashionable method that we cannot properly implement or defend. Therefore, neural routing methods are mentioned only as a research direction, not as part of the implemented solution.
 
-### 5. Heuristics and Practical Solution Methods
+## Role in the project
 
-Vehicle routing problems become difficult as the number of customers increases. Therefore, practical projects often use heuristics, metaheuristics, or approximate solution methods.
+The literature supports four main parts of the project:
 
-Relevant sources:
+* defining the correct routing problem class
+* justifying the model assumptions and constraints
+* explaining why both solver-based and heuristic methods are discussed
+* showing the limits of our student-scale implementation
 
-- Laporte, Røpke, & Vidal (2014). Heuristics for the Vehicle Routing Problem.
-- Accorsi et al. A fast and scalable heuristic for large-scale capacitated vehicle routing problems.
-
-## Relevance for Our Project
-
-The literature supports our project in the following way:
-
-- It justifies why our project belongs to the Vehicle Routing Problem family.
-- It supports the use of vehicle capacity constraints.
-- It supports the use of customer time windows.
-- It supports the use of time-dependent travel times or congestion factors.
-- It explains why exact optimization can become difficult for larger instances.
-- It provides a basis for later using heuristics or solver-based methods.
-
-## Current Status
-
-This literature folder is currently being built. The next step is to add detailed source notes and a structured reference list.
+The main purpose is not to collect many sources, but to connect each source to a clear part of the model or repository.
