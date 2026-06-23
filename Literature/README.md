@@ -1,72 +1,32 @@
+# Literature
 
+This folder contains the academic sources and research notes used for the literature review of the TDHVRPTW project.
 
-## Team
+The project studies a regional delivery-routing problem from the Dr. Oetker depot in Bielefeld to 25 Lidl stores in the Ostwestfalen-Lippe region. The model combines several routing elements: vehicle capacity, heterogeneous fleet structure, delivery time windows, time-dependent travel assumptions, and scenario-based demand.
 
-| Full name     | GitHub username |
-|---|---|
-| [Full Name 1] | [@github-emmanuelezenwata-1] |
-| [Full Name 2] | [@github-Abde03-2] |
-| [Full Name 3] | [@github-jmwema1990-3] |
-| [Full Name 4] | [@github-MarkoG0205-4] |
-| [Full Name 5] | [@github-barbaracalderonavila-collab-5] |
-> Use full legal/academic names only. Do not use nicknames.
+The purpose of this folder is to make the literature work traceable. The sources are not collected only as a bibliography list; they are connected to specific parts of the project, such as the routing problem class, heuristic methods, scalability, demand scenarios, and reproducibility.
 
-## Project title
+## Folder contents
 
-Time-Dependent Heterogeneous Fleet Vehicle Routing Problem with Time Windows for Lidl Store Deliveries
+* `literature_review.md` contains the main written literature review.
+* `literature_summary.md` gives a shorter overview of the literature areas.
+* `sources.bib` contains the BibTeX references used in the project.
+* `source_notes/` contains individual notes on selected sources.
 
-## Final project scope
+## Source notes
 
-This repository contains the full material for our Operations Research project on a **TDHVRPTW** case with **25 Lidl stores plus 1 depot (26 nodes total)**.
+The `source_notes/` folder contains short explanations of the most relevant papers. These notes describe why a source was useful, how it connects to the model, and where its limits are for our project.
 
-The project combines:
-- delivery routing from one depot to multiple Lidl stores
-- store-specific demand assumptions
-- delivery time windows
-- time-dependent travel times / congestion effects
-- scenario-based analysis
-- reproducible computational results
+The notes are meant to support the final literature review and make the source selection easier to understand. They are not full paper summaries.
 
-## Repository contents
+## Use of older sources
 
-- `data/`
-  - coordinates
-  - distance matrix
-  - travel-time matrix
-  - demand scenarios
-  - time-window data
-- `src/`
-  - data preparation scripts
-  - solver scripts
-  - output generation scripts
-- `outputs/`
-  - route outputs by scenario
-  - summary tables
-  - solver logs
-- `literature/`
-  - `literature_review.md`
-  - `sources.bib`
-  - source notes
-- `reports/`
-  - final project report
-  - updated OR project file
-- `figures/`
-  - route plots, charts, and report figures
+The main focus is on recent literature from the last decade. Older sources are only used where they are necessary to identify the historical origin of important routing concepts or methods. They are not treated as the main methodological foundation of the project.
 
-## Reproducibility
+## Technical documentation
 
-### Software
+Technical documentation, such as solver manuals or software guides, should not be mixed with the academic source notes. If needed, those references should be stored separately in an implementation or documentation folder because they support the code rather than the academic literature review.
 
-- Python version: to be documented after the solver scripts are uploaded
-- Main packages: `[insert packages]`
-- Solver/library: Google OR-Tools Routing Solver
-- Operating system used for final tests: `[insert OS]`
+## Copyright note
 
-### Installation
-
-```bash
-git clone [repository-url]
-cd [repository-folder]
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+This repository should not contain copyrighted books or papers unless they are legally shareable. If a source is used for the literature review, it should be cited through the bibliography instead of uploading the full PDF without permission.
