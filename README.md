@@ -59,7 +59,8 @@ Which delivery sequence and vehicle capacity configuration (low-, medium-, or hi
   with full academic citations.
 * `Project_management/` contains contribution logs, 
   task overview, and meeting notes.
-
+* `MODEL_JUSTIFICATION.md` explains why each modelling 
+  decision was made and which academic source supports it.
 ---
 ## How to Run
 
