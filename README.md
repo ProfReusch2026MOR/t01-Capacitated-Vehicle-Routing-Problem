@@ -103,12 +103,10 @@ Number of drivers (In accordance with recovery times).
 * Central Depot: Dr. Oetker, Bielefeld (node 0)
 * Customers: 25 Lidl stores across the OWL region 
   (nodes 1 to 25)
-  
 * Vehicle category selection (based on pallet capacity)
-* -Low: 15 pallets
-* -Medium: 20 pallets
-* -High: 34 pallets
-* 
+  -Low: 15 pallets
+  -Medium: 20 pallets
+  -High: 34 pallets
 * Departure time: 07:00 am every morning
 * Delivery window: stores must be served between 08:00 and 12:00
 * Maximum route duration depending on the driver's shift and the type of vehicle, expressed in minutes (Low = 360, Medium = 480 minutes, High = 540 minutes)
