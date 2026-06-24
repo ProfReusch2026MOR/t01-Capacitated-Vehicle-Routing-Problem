@@ -7,14 +7,9 @@ project for Team 01. The project analyzes a capacitated
 vehicle routing problem for deliveries from the Dr. Oetker 
 depot in Bielefeld to Lidl stores in the OWL region.
 
-The goal is to structure the delivery problem, collect and 
-prepare input data, formulate a mathematical routing model, 
-and solve optimal delivery routes using two methods: the 
-Clarke-Wright Savings Algorithm and Google OR-Tools with 
-Guided Local Search.
 ***************
 
-## Suggested Main Objective: 
+## Main Objective: 
 The objective of the model is to minimize total transportation and delivery time, 
 while improving distribution efficiency and reducing operational costs associated with vehicle usage and driver allocation. 
 This is achieved through a Mixed-Integer Linear Programming (MILP) formulation, 
@@ -26,7 +21,7 @@ which is implemented and solved in Python coding.
 ## Introduction
 
 Lidl is one of the largest and most influential discount supermarket chains in Germany, operating an extensive retail network characterized by high-frequency replenishment cycles. Market reports indicate that Lidl consistently maintains a leading market share in the German discount retail sector, generating tens of billions of euros in annual revenue (Discount Retail Consulting Gmbh, 2025). The vast geographic distribution of these retail outlets, with high inventory turnover, introduces substantial logistical complexities for suppliers and distribution networks.
-Concurrently, Dr. Oetker operates as one of Germany’s premier food manufacturers, distributing a diverse product portfolio to supermarkets and retail hubs nationwide within this supply chain. Therefore, highly efficient transportation planning is crucial to guarantee delivery reliability, maintain on-shelf availability, and mitigate operational issues that can lead to increased costs, time delivery and unnecessary CO2 emissions. 
+Concurrently, Dr. Oetker operates as one of Germany’s premier food manufacturers, distributing a diverse product portfolio to supermarkets and retail hubs nationwide within this supply chain. Therefore, highly efficient transportation planning is crucial to guarantee delivery reliability, maintain on-shelf availability, and mitigate operational issues that can lead to increased costs, time delivery, and unnecessary CO2 emissions. 
 
 In regional distribution networks, particularly within the Ostwestfalen-Lippe (OWL) area, logistical planning is further constrained by strict operational requirements and stochastic factors* (App.1), including urban traffic congestion and driver-related ergonomic considerations that must be accounted for to ensure efficient service delivery. In this context, heterogeneous vehicle fleets introduce additional complexities such as varying payload capacities, working-time regulations, and customer-specific delivery time windows. These characteristics reflect realistic operational conditions commonly encountered in practice, and they motivate the formulation of more complex mathematical models within the field of Operations Research (OR), as well as the development of efficient algorithmic implementations for their solution, consequently, resulting in a more precise interpretation and analysis to find the most optimal solution to the problem. 
 
@@ -43,18 +38,10 @@ To address these challenges, this project develops a sustainability-oriented log
 
 ## Decision Question
 
-Which delivery routes should the available vehicles use to 
-serve all Lidl stores while minimizing transportation effort 
-and respecting operational constraints such as vehicle 
-capacity, service times, delivery time windows, traffic 
-buffers, and maximum route duration?
-
-Feedback: 
-*It seems like a rough sketch, really generic. 
-*Not mentioning Area, or how the "transportation effort" is measured.
-
-##Suggest DQ: 
-Which delivery sequence and vehicle capacity configuration (low-, medium-, or high-capacity vehicles) should be selected to distribute Dr. Oetker products to the 24 Lidl stores in the Ostwestfalen-Lippe region in order to minimize transportation time and operational costs while satisfying delivery time windows, vehicle capacities, and ergonomic constraints?
+Which delivery sequence and vehicle capacity configuration (low-, medium-, or high-capacity vehicles) 
+should be selected to distribute Dr. Oetker products to the 24 Lidl stores in the Ostwestfalen-Lippe region
+in order to minimize transportation time and operational costs while satisfying delivery time windows, vehicle capacities, 
+and ergonomic constraints?
 ---
 
 ## Repository Structure
