@@ -160,15 +160,13 @@ Articulated truck (40 t)
 
 *Max. route duration based on WHAT? 405 MINUTES? 
 *This should be changed depending on the type of truck and drivers shift (ergonomical reasons)
-*Service time is pretty generic *CHECK SKETCH 6
+*Service time is pretty generic *CHECK SKETCH 6, since it depends not only in a fixed time, but also in the type of truck. 
   
-  *Traffic Congestion factor: How much, why it was defined like that in the OWL region, why are we assuming?? I would suggest that we should leave a factor of 1.15 in general and clearly justify it and change the service time depending on the type of vehicle. 
+  *Traffic Congestion factor: How much, why it was defined like that in the OWL region, why are we assuming?? I would suggest that we should leave a factor of 1.15 in general, clearly justify it and change the service time depending on the type of vehicle. 
   
-   - 07:00 to 09:00 → ×1.3 (morning rush hour)
+  - 07:00 to 09:00 → ×1.3 (morning rush hour)
   - 09:00 to 11:30 → ×1.0 (free flow)
   - 11:30 to 12:00 → ×1.1 (lunch surge)
-
-
 ---
 
 ## Main Model Components
@@ -178,7 +176,7 @@ The project uses typical Operations Research elements:
 * Decision variables for vehicle movements between 
   locations (binary variable x_ijk) and arrival times 
   at each node (continuous variable T_ik)
-* Customer demand measured in pallets
+* Customer demand measured in Euro pallets. 
 * Vehicle capacity restrictions per truck type
 * Service times at stores based on demand
 * Delivery time windows (08:00 to 12:00)
@@ -190,8 +188,7 @@ The project uses typical Operations Research elements:
 
 ## Three Demand Scenarios
 
-*THE MAIN objective of the report is to test with different type of vehicle types*I would suggest making the scenarios instead of different demands (since we need to justify why those exactly demands) what would happen if we used first scenario only low capacity, second: only medium and high, third: medium (various type of fleets) to see if its convenient in terms of FUEL used, CO2 emissions, drivers hired per vehicle. 
-
+*THE MAIN objective of the report is to test with different type of vehicle types*I would suggest making the scenarios instead of different demands (since we need to justify why those exactly demands) what would happen if we used first scenario only low capacity, second: only medium and high, third: medium (various type of fleets) to see if its convenient in terms of FUEL used, CO2 emissions, drivers hired per vehicle, or even if time fluctuates.
 
 We tested three situations to stress-test the fleet:
 
