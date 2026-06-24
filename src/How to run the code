@@ -1,0 +1,32 @@
+## How to Reproduce the Results
+
+Step 1 — Clone or download this repository
+
+Step 2 — Install the required packages:
+pip install -r requirements.txt
+
+Step 3 — Make sure the data files are in the DATA/ folder:
+- DATA/distance_matrix.csv
+- DATA/time_matrix.csv
+
+Step 4 — Open the solver file:
+src/DrOetker_Lidl_Optimization.py
+
+Step 5 — Choose the scenario by changing this line at the top:
+CHOSEN_SCENARIO = 99    (change to 152 or 170)
+
+Step 6 — Run the file:
+python src/DrOetker_Lidl_Optimization.py
+
+Step 7 — Expected output:
+
+For scenario 99:
+  Total distance: 215 km
+  4 routes, all 25 stores served
+
+For scenario 152:
+  Total distance: 220 km
+  6 routes, all 25 stores served
+
+For scenario 170:
+  No valid solution found
