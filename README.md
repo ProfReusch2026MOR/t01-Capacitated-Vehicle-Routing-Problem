@@ -1,20 +1,21 @@
 # CVRP — Dr. Oetker to Lidl Stores (OWL Region)
 
 ## Project Overview
-
 This repository contains the Operations Research group 
 project for Team 01. The project analyzes a capacitated 
-vehicle routing problem for deliveries from the Dr. Oetker 
+vehicle routing problem for deliveries from Dr. Oetker 
 depot in Bielefeld to Lidl stores in the OWL region.
 
 ***************
 
-## Main Objective: 
-The objective of the model is to minimize total transportation and delivery time, 
-while improving distribution efficiency and reducing operational costs associated with vehicle usage and driver allocation. 
-This is achieved through a Mixed-Integer Linear Programming (MILP) formulation, 
-which is implemented and solved in Python coding. 
+## Project's Main Objective 
+The primary objective of this project is to foster and support robust decision-making. This is achieved first through a rigorous mathematical formulation, and subsequently by applying a professional solver to identify the optimal solution that satisfies the objective function.
+Beyond the mathematical formulation itself, this approach empowers decision-makers by enabling a comprehensive comparison of alternative scenarios, such as evaluating fleet modifications to demonstrate how minor operational fluctuations can trigger a bullwhip effect on final outcomes. 
+Furthermore, this type of project helps us deeply understand the underlying trade-offs and effectively navigate the operational constraints and limitations involved throughout our project. Ultimately, this process bridges the gap between numerical optimization results and the real-world motivations defined in our project scope.
 
+## Model's Objective:
+The objective of the model is to minimize total transportation and delivery time, 
+while improving distribution efficiency and reducing operational costs associated with vehicle usage and driver allocation. This is achieved through a Mixed-Integer Linear Programming (MILP) formulation implemented and solved in Python.
 
 **************
 
@@ -29,29 +30,21 @@ The Ostwestfalen-Lippe (OWL) area is considered a representative case study for 
 
 These characteristics reflect realistic operational conditions and provide a suitable framework for formulating a richer and more constrained optimization model within the field of OR. The incorporation of such restrictions leads to a more comprehensive mathematical formulation and supports the development of more advanced solution approach, allowing the problem to be addressed in a way that is closer to real-world decision-making scenarios. At the same time, this formulation serves as an application of the concepts and methodologies acquired during the course, enabling their integration in a complex, realistic optimization setting.
 
-Furthermore, logistics planning for this case study cannot be isolated of selecting the shortest path between a centralized depot and an individual store. Instead, it requires the design of coordinated multi-stop routes for a heterogeneous fleet while simultaneously considering multiple and often conflicting operational objectives, such as cost efficiency, service reliability, and resource utilization. As the number of customers and feasible routing combinations increases, the problem size grows combinatorially, significantly increasing computational complexity and making manual planning approaches unsuitable for by-hand problem solving, hence, this present document will show the use and analysis by computational solvers. 
+Furthermore, logistics planning for this case study cannot be isolated of selecting the shortest path between a centralized depot and an individual store. Instead, it requires the design of coordinated multi-stop routes for a heterogeneous fleet while simultaneously considering multiple and often conflicting operational objectives, such as cost efficiency, service reliability, and resource utilization. As the number of customers and feasible routing combinations increases, the problem size grows combinatorially, significantly increasing computational complexity and making manual planning approaches unsuitable for by-hand problem solving; hence, this present document will show the use and analysis by computational solvers. 
 
 To address these challenges, this project develops a sustainability-oriented logistics optimization analysis. By evaluating how mathematical routing decisions can reduce unnecessary travel distance, fuel consumption, and greenhouse gas emissions, the resulting optimization model serves as a robust decision-support system. It enables logistics planners to identify strategic delivery sequences and fleet configurations that maximize operational efficiency without compromising service quality.
 *************
+---
+# Decision Question
+Which delivery sequence and vehicle capacity configuration (low-, medium-, or high-capacity vehicles) should be selected to distribute Dr. Oetker products to the 24 Lidl stores in the Ostwestfalen-Lippe region in order to minimize transportation time and operational costs while satisfying delivery time windows, vehicle capacities, and ergonomic constraints?
 
 ---
-
-## Decision Question
-
-Which delivery sequence and vehicle capacity configuration (low-, medium-, or high-capacity vehicles) 
-should be selected to distribute Dr. Oetker products to the 24 Lidl stores in the Ostwestfalen-Lippe region
-in order to minimize transportation time and operational costs while satisfying delivery time windows, vehicle capacities, 
-and ergonomic constraints?
----
-
 ## Repository Structure
 
-* `DATA/` contains collected and prepared data files, 
-  including distance and time matrices collected from 
-  Google Maps Distance Matrix API.
+* `DATA/` contains collected and prepared data files,
+* and the data collection 
 * `Math formulation report/` contains the mathematical 
-  model formulation (ILP with objective function and 
-  8 constraints).
+  model formulation.
 * `Final report/` contains the full written project report.
 * `docs/` contains project explanations, assumptions, 
   and short documentation files.
@@ -70,7 +63,6 @@ and ergonomic constraints?
   task overview, and meeting notes.
 
 ---
-
 ## How to Run
 
 1. Install the required packages:
@@ -97,85 +89,48 @@ truck used in that scenario.
 
 ## Problem Setup
 
-* Depot: Dr. Oetker, Bielefeld (node 0)
+Decision variables
+
+Type of vehicle (low-, medium-, or high-capacity) according to the delivery route. 
+The sequence in which the Lidl stores should be visited. 
+Consequently, the number of vehicles and drivers required for the distribution process.
+
+To support a more sustainable approach, additional decision variables are also considered, while keeping the main objective in focus.
+CO2 emissions generated by the selection of a vehicle category. 
+Number of drivers (In accordance with recovery times).
+
+
+* Central Depot: Dr. Oetker, Bielefeld (node 0)
 * Customers: 25 Lidl stores across the OWL region 
   (nodes 1 to 25)
-* Fleet: 4 heavy trucks (33 pallets each) and 
-  4 medium trucks (12 pallets each)
-* Departure time: 07:00 every morning
-* Delivery window: stores must be served between 
-  08:00 and 12:00
-* Maximum route duration: 405 minutes per truck
-* Service time at each store: s = 10 + 2 × demand 
-  (in minutes)
+  
+* Vehicle category selection (based on pallet capacity)
+* -Low: 15 pallets
+* -Medium: 20 pallets
+* -High: 34 pallets
+* 
+* Departure time: 07:00 am every morning
+* Delivery window: stores must be served between 08:00 and 12:00
+* Maximum route duration depending on the driver's shift and the type of vehicle, expressed in minutes (Low = 360, Medium = 480 minutes, High = 540 minutes)
+
+*Standard Activity Time (Ttotal) = 
+For this optimization model, the total time for each store (Ttotal) in minutes is composed of a fixed time, independent of the vehicle size, and a variable time depending on the pallet volume that it is carrying. 
+
 * Traffic model: travel times are multiplied by a 
   congestion factor depending on time of day:
   - 07:00 to 09:00 → ×1.3 (morning rush hour)
   - 09:00 to 11:30 → ×1.0 (free flow)
-  - 11:30 to 12:00 → ×1.1 (lunch surge)
- 
-
-  *Feedback:
-  -Data folder SHOULD include*based on what I see from problem setup:
-
-  *What's intended for HEAVY/MEDIUM/SMALL features
-
-For example: 
-Category 
-Features 
-Vehicle type 
-Dimensions (L x W x H)
-Low 
-Small vehicle.
-Low fixed cost.
-High maneuverability.
-Suitable for stores with low demand.
-Motor Vehicle (7.5 t)
-6.00 x 2.45 x 2.40 m 
-Medium 
-Typical regional distribution vehicle.
-Good balance between capacity and accessibility.
-Trailer (18 t )
-8.10 x 2.45 x 2.5 m
-High 
-European standard vehicle with maximum capacity.
-Maximum load consolidation.
-Lower cost per pallet transported.
-Low Maneuverability: This type cannot access to some street due to its size.
-Articulated truck (40 t) 
-13.6  x 2.45 x 2.70 m
-
-*Max. route duration based on WHAT? 405 MINUTES? 
-*This should be changed depending on the type of truck and drivers shift (ergonomical reasons)
-*Service time is pretty generic *CHECK SKETCH 6, since it depends not only in a fixed time, but also in the type of truck. 
-  
-  *Traffic Congestion factor: How much, why it was defined like that in the OWL region, why are we assuming?? I would suggest that we should leave a factor of 1.15 in general, clearly justify it and change the service time depending on the type of vehicle. 
-  
-  - 07:00 to 09:00 → ×1.3 (morning rush hour)
-  - 09:00 to 11:30 → ×1.0 (free flow)
-  - 11:30 to 12:00 → ×1.1 (lunch surge)
----
-
-## Main Model Components
-
-The project uses typical Operations Research elements:
-
-* Decision variables for vehicle movements between 
-  locations (binary variable x_ijk) and arrival times 
-  at each node (continuous variable T_ik)
-* Customer demand measured in Euro pallets. 
-* Vehicle capacity restrictions per truck type
-* Service times at stores based on demand
-* Delivery time windows (08:00 to 12:00)
-* Maximum route duration (405 minutes)
-* Distance-based objective function to minimize total 
-  kilometres driven 
+  - 11:30 to 12:00 → ×1.1 (lunch surge) 
 
 ---
-
 ## Three Demand Scenarios
 
-*THE MAIN objective of the report is to test with different type of vehicle types*I would suggest making the scenarios instead of different demands (since we need to justify why those exactly demands) what would happen if we used first scenario only low capacity, second: only medium and high, third: medium (various type of fleets) to see if its convenient in terms of FUEL used, CO2 emissions, drivers hired per vehicle, or even if time fluctuates.
+Instead of pallet demand alternatives, I would suggest making the scenarios what would happen if we used the first scenario only low capacity, second: only medium and high, third: medium (various types of fleets) to see if it's convenient in terms of FUEL used, CO2 emissions, drivers hired per vehicle, or even if time fluctuates.
+
+
+
+
+***** I'll not erase this 
 
 We tested three situations to stress-test the fleet:
 
@@ -195,7 +150,7 @@ Each scenario uses a different demand per store:
 ## Results
 
 The solver was run for all three scenarios using Google 
-OR-Tools with Guided Local Search (10 second time limit).
+OR-Tools with Guided Local Search (10-second time limit).
 
 | Scenario | Pallets | Total Distance | Trucks Used | Feasible |
 |----------|---------|----------------|-------------|----------|
@@ -256,15 +211,13 @@ in the Results/ folder.
 * Demand estimation research completed and documented
 * Mathematical formulation report completed (ILP model 
   with 8 constraints)
-* Python solver implemented using OR-Tools and 
-  Clarke-Wright heuristic
+* Python solver implemented using OR-Tools and a heuristic approach
 * All three scenarios solved and results documented
 * Figures and route maps generated
 * Final report written
 * Presentation completed
 
 ---
-
 ## Team Workflow
 
 The repository is used as the central workspace for:
