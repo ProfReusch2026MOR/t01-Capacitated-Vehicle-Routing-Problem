@@ -2,9 +2,7 @@
 
 ## Project Overview
 This repository contains the Operations Research group 
-project for Team 01. The project analyzes a capacitated 
-vehicle routing problem for deliveries from Dr. Oetker 
-depot in Bielefeld to Lidl stores in the OWL region.
+project for Team 01. The project addresses a Rich Capacitated Vehicle Routing Problem (RCVRP), optimizing the logistics and distribution network from the central Dr. Oetker depot to various Lidl retail stores across the Ostwestfalen-Lippe (OWL) region in Germany.
 
 ***************
 
@@ -125,10 +123,7 @@ For this optimization model, the total time for each store (Ttotal) in minutes i
 
 Instead of pallet demand alternatives, I would suggest making the scenarios what would happen if we used the first scenario only low capacity, second: only medium and high, third: medium (various types of fleets) to see if it's convenient in terms of FUEL used, CO2 emissions, drivers hired per vehicle, or even if time fluctuates.
 
-
-
-
-***** I'll not erase this 
+***** I'll not erase this, but I would strongly suggest the comment above.
 
 We tested three situations to stress-test the fleet:
 
