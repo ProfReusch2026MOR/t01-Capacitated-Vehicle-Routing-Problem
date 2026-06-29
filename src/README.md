@@ -77,7 +77,7 @@ buffers, and maximum route duration?
 
 3. Open the main solver file:
 
-       src/DrOetker_Lidl_Optimization_REALISTIC.py
+       src/DrOetker Lidl Optimization fixed.py
 
 4. Set the scenario you want to test at the top of the file:
 
@@ -85,7 +85,7 @@ buffers, and maximum route duration?
 
 5. Run the file:
 
-       python src/DrOetker_Lidl_Optimization_REALISTIC.py
+       python src/DrOetker Lidl Optimization fixed.py
 
 The output will print the routes, arrival times at each 
 store, distances, and total pallets delivered for every 
