@@ -47,7 +47,7 @@ buffers, and maximum route duration?
 * `Notebooks/` contains Jupyter notebooks for data 
   exploration, model testing, and result analysis.
 * `src/` contains the main Python solver scripts:
-  - DrOetker_Lidl_Optimization_REALISTIC.py (main solver)
+  - DrOetker_Lidl_Optimization_fixed.py (main solver)
   - comparison_cw_vs_ortools.py (method comparison)
 * `Results/` contains solver outputs, route summaries, 
   and figures for all 3 scenarios.
