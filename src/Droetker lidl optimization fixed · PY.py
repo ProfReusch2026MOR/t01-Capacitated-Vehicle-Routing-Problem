@@ -454,71 +454,9 @@ def main():
 
     if solution:
         print_solution(data, manager, routing, solution)
-        DecisionSupportFeasible()
     else:
-        DecisionSupportInfeasible()
-    
-
-def DecisionSupportInfeasible('data'):
-
-    demand = sum(data["demands"])
-    capacity = sum(data["vehicle_capacities"])
-
-    print("\n")
-    print("="*60)
-    print("DECISION SUPPORT SYSTEM")
-    print("="*60)
-
-    if demand > capacity:
-
-        print("Cause:")
-        print("Fleet capacity is insufficient.")
-
-        print("\nRecommendation")
-
-        print("Option 1")
-        print("Purchase an additional truck.")
-
-        print()
-
-        print("Option 2")
-        print("Increase vehicle capacity.")
-
-    else:
-
-        print("Cause:")
-        print("Operational constraints make routing infeasible.")
-
-        print()
-
-        print("Alternative 1")
-        print("Notify Lidl stores.")
-        print("Deliver outside agreed time windows.")
-        print("Pay contractual penalties.")
-
-        print()
-
-        print("Alternative 2")
-        print("Purchase an additional truck.")
-        print("Increase routing flexibility.")
-
-        print()
-
-        print("Alternative 3")
-        print("Relax delivery time windows.")
-
-LatePenalty = 600
-TruckCost = 480
-
-if TruckCost < LatePenalty:
-
-    print("Recommended decision:")
-    print("Purchase an additional truck.")
-
-else:
-
-    print("Recommended decision:")
-    print("Accept late delivery penalty.")
+        print(f'No valid schedule path satisfies the combined constraints under the {CHOSEN_SCENARIO}-pallet scenario.')
+        
 
 if __name__ == '__main__':
     main()
