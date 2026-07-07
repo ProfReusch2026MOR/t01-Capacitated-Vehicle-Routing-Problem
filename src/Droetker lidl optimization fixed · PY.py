@@ -252,7 +252,8 @@ def create_data_model():
 
     # Auto-adjust service time metrics based on demands: s_i = 10 + 2 * q_i
     data['service_times'] = [10 + (2 * q) if q > 0 else 0 for q in data['demands']]
-
+    
+    #Constraint C4
     # Time windows are expressed as minutes since depot departure:
     # 07:00 = 0, therefore customer delivery window 08:00–12:00 = 60–300.
     data['time_windows'] = [(0, 500) if i == 0 else (60, 300) for i in range(len(data['demands']))]
@@ -453,9 +454,71 @@ def main():
 
     if solution:
         print_solution(data, manager, routing, solution)
+        DecisionSupportFeasible()
     else:
-        print(f'No valid schedule path satisfies the combined constraints under the {CHOSEN_SCENARIO}-pallet scenario.')
+        DecisionSupportInfeasible()
+    
 
+def DecisionSupportInfeasible(data):
+
+    demand = sum(data["demands"])
+    capacity = sum(data["vehicle_capacities"])
+
+    print("\n")
+    print("="*60)
+    print("DECISION SUPPORT SYSTEM")
+    print("="*60)
+
+    if demand > capacity:
+
+        print("Cause:")
+        print("Fleet capacity is insufficient.")
+
+        print("\nRecommendation")
+
+        print("Option 1")
+        print("Purchase an additional truck.")
+
+        print()
+
+        print("Option 2")
+        print("Increase vehicle capacity.")
+
+    else:
+
+        print("Cause:")
+        print("Operational constraints make routing infeasible.")
+
+        print()
+
+        print("Alternative 1")
+        print("Notify Lidl stores.")
+        print("Deliver outside agreed time windows.")
+        print("Pay contractual penalties.")
+
+        print()
+
+        print("Alternative 2")
+        print("Purchase an additional truck.")
+        print("Increase routing flexibility.")
+
+        print()
+
+        print("Alternative 3")
+        print("Relax delivery time windows.")
+
+LatePenalty = 600
+TruckCost = 480
+
+if TruckCost < LatePenalty:
+
+    print("Recommended decision:")
+    print("Purchase an additional truck.")
+
+else:
+
+    print("Recommended decision:")
+    print("Accept late delivery penalty.")
 
 if __name__ == '__main__':
     main()
