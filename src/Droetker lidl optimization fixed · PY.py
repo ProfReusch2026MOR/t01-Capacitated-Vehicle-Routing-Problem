@@ -459,7 +459,7 @@ def main():
         DecisionSupportInfeasible()
     
 
-def DecisionSupportInfeasible(data):
+def DecisionSupportInfeasible('data'):
 
     demand = sum(data["demands"])
     capacity = sum(data["vehicle_capacities"])
