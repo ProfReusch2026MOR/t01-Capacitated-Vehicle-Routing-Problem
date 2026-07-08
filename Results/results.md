@@ -168,7 +168,7 @@ Scientific explanation:
 
 Proven fix: Adding 3 medium trucks (12p each) makes S-170 feasible.
 With 11 vehicles the solver finds a valid solution at 321 km.
-(Tested and verified by the solver — see src/DrOetker_Lidl_Optimization_REALISTIC.py)
+(Tested and verified by the solver — see src/DrOetker_Lidl_Optimization_fixed.py)
 
 Reference: Solomon (1987, OR 35(2), p.260) — hard time windows cannot
 be resolved by penalty relaxation alone when service time density
