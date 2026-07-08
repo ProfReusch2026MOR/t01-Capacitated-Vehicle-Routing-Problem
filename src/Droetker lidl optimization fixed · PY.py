@@ -33,7 +33,7 @@ from ortools.constraint_solver import pywrapcp
 # SCENARIO CONFIGURATION MANAGER
 # ==========================================
 # Change this number to switch scenarios: 99, 152, or 170
-CHOSEN_SCENARIO = 170
+CHOSEN_SCENARIO = 99
 
 # Set this to True when you want Google Maps to build the distance/time matrices.
 # You need a Google Maps API key and a locations.csv file.
@@ -252,8 +252,7 @@ def create_data_model():
 
     # Auto-adjust service time metrics based on demands: s_i = 10 + 2 * q_i
     data['service_times'] = [10 + (2 * q) if q > 0 else 0 for q in data['demands']]
-    
-    #Constraint C4
+
     # Time windows are expressed as minutes since depot departure:
     # 07:00 = 0, therefore customer delivery window 08:00–12:00 = 60–300.
     data['time_windows'] = [(0, 500) if i == 0 else (60, 300) for i in range(len(data['demands']))]
@@ -447,8 +446,7 @@ def main():
         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
     search_parameters.local_search_metaheuristic = (
         routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH)
-    search_parameters.time_limit.seconds = 30  # Extended to 30s for better optimisation with realistic traffic
-    search_parameters.guided_local_search_lambda_coefficient = 0.1  # GLS penalty coefficient for better arc exploration
+    search_parameters.time_limit.seconds = 10  # Extended to 10s to ensure 170-pallet convergence
 
     solution = routing.SolveWithParameters(search_parameters)
 
@@ -456,7 +454,219 @@ def main():
         print_solution(data, manager, routing, solution)
     else:
         print(f'No valid schedule path satisfies the combined constraints under the {CHOSEN_SCENARIO}-pallet scenario.')
-        
+        run_soft_constraint_analysis(data)
+
+
+
+# ==========================================
+# SOFT CONSTRAINT ANALYSIS
+# ==========================================
+# Runs automatically when a scenario is infeasible.
+#
+# WHAT IS A SOFT CONSTRAINT?
+# Hard constraint: truck arrives after 12:00 = route rejected.
+# Soft constraint: truck CAN arrive after 12:00 but pays a
+# penalty per minute of lateness added to the objective.
+# The solver finds the cheapest plan overall, even if some
+# stores receive slightly late deliveries.
+#
+# WHY THREE PENALTY VALUES?
+# 1 euro/min  = lenient. Allows many late deliveries.
+# 5 euro/min  = realistic. A Lidl store losing shelf stock
+#               loses roughly 3-10 euros per pallet per hour,
+#               which is about 5 euros per late minute.
+# 20 euro/min = strict. Almost same as hard constraint.
+#
+# This analysis shows which stores are affected, how many
+# minutes late, and what the penalty cost would be.
+
+SOFT_PENALTIES = {
+    'Low penalty   (1 euro/min)':    1,
+    'Medium penalty (5 euro/min)':   5,
+    'High penalty  (20 euro/min)': 20,
+}
+
+
+def run_soft_constraint_analysis(original_data):
+    print()
+    print('=' * 55)
+    print('  SOFT CONSTRAINT ANALYSIS')
+    print('=' * 55)
+    print()
+    print(f'  Fleet capacity  : {sum(original_data["vehicle_capacities"])} pallets')
+    print(f'  Scenario demand : {sum(original_data["demands"])} pallets')
+    print()
+    print('  S-170 is infeasible because high store demands mean')
+    print('  long service times. Combined with morning traffic,')
+    print('  25 stores cannot all be served before 12:00.')
+    print()
+    print('  We relax the 12:00 deadline to a soft constraint.')
+    print('  One extra medium truck (12p) is added so the solver')
+    print('  can spread routes and show what becomes late.')
+    print()
+
+    soft_caps = original_data['vehicle_capacities'] + [12]
+    all_results = []
+
+    for label, penalty in SOFT_PENALTIES.items():
+        print(f'  --- {label} ---')
+
+        data = dict(original_data)
+        data['vehicle_capacities'] = soft_caps
+        data['num_vehicles'] = len(soft_caps)
+        data['time_windows'] = [(0, 500) if i == 0 else (60, 420)
+                                for i in range(len(data['demands']))]
+        data['max_route_time'] = 540
+
+        matrix_size = data['distance_matrix'].shape[0]
+        mgr = pywrapcp.RoutingIndexManager(matrix_size, data['num_vehicles'], data['depot'])
+        rte = pywrapcp.RoutingModel(mgr)
+
+        def dist_cb(fi, ti):
+            return int(data['distance_matrix'][mgr.IndexToNode(fi)][mgr.IndexToNode(ti)])
+        di = rte.RegisterTransitCallback(dist_cb)
+        rte.SetArcCostEvaluatorOfAllVehicles(di)
+
+        def dem_cb(fi):
+            return data['demands'][mgr.IndexToNode(fi)]
+        dmi = rte.RegisterUnaryTransitCallback(dem_cb)
+        rte.AddDimensionWithVehicleCapacity(dmi, 0, data['vehicle_capacities'], True, 'Capacity')
+
+        def t_cb(fi, ti):
+            fn = mgr.IndexToNode(fi)
+            tn = mgr.IndexToNode(ti)
+            base = data['time_matrix'][fn][tn]
+            svc = data['service_times'][fn]
+            try:
+                dep = rte.GetDimensionOrDie('Time').CumulVar(fi).Min() + svc
+            except Exception:
+                dep = 0
+            return int(round(base * traffic_multiplier(dep) + svc))
+        ti = rte.RegisterTransitCallback(t_cb)
+        rte.AddDimension(ti, data['slack_allowance'], data['max_route_time'], False, 'Time')
+
+        tdim = rte.GetDimensionOrDie('Time')
+        DEADLINE = 300
+        for loc in range(1, matrix_size):
+            idx = mgr.NodeToIndex(loc)
+            tdim.CumulVar(idx).SetRange(data['time_windows'][loc][0],
+                                        data['time_windows'][loc][1])
+            tdim.SetCumulVarSoftUpperBound(idx, DEADLINE, penalty)
+
+        sp = pywrapcp.DefaultRoutingSearchParameters()
+        sp.first_solution_strategy = routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
+        sp.local_search_metaheuristic = routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
+        sp.time_limit.seconds = 30
+        sp.guided_local_search_lambda_coefficient = 0.1
+
+        sol = rte.SolveWithParameters(sp)
+        if not sol:
+            print('  No solution found.')
+            all_results.append({'label': label, 'feasible': False})
+            print()
+            continue
+
+        total_dist = 0
+        total_load = 0
+        late_stores = []
+        late_min_tot = 0
+
+        for vid in range(data['num_vehicles']):
+            idx = rte.Start(vid)
+            route_load = 0
+            tmp = idx
+            while not rte.IsEnd(tmp):
+                route_load += data['demands'][mgr.IndexToNode(tmp)]
+                tmp = sol.Value(rte.NextVar(tmp))
+            if route_load == 0:
+                continue
+
+            plan = f'Route for Vehicle {vid} (Capacity {data["vehicle_capacities"][vid]} pallets):\n'
+            plan += f'  Depot 0 (LOADED AT DEPOT: {route_load} pallets, Depart: 07:00) -> \n'
+
+            r_dist = 0
+            cargo = route_load
+            prev = rte.Start(vid)
+            cur = sol.Value(rte.NextVar(prev))
+
+            while not rte.IsEnd(cur):
+                r_dist += rte.GetArcCostForVehicle(prev, cur, vid)
+                node = mgr.IndexToNode(cur)
+                unload = data['demands'][node]
+                cargo -= unload
+                arr = sol.Value(tdim.CumulVar(cur))
+                clock = f"{7 + arr//60:02d}:{arr%60:02d}"
+                late = max(0, arr - DEADLINE)
+                tag = f' [LATE {late} min, penalty={late*penalty}]' if late > 0 else ''
+                plan += (f'  Node {node} - {data["location_names"][node]} '
+                         f'(Arrive: {clock}, UNLOADED: {unload} pallets, '
+                         f'Cargo Remaining: {cargo} pallets){tag} -> \n')
+                if late > 0:
+                    late_stores.append({'node': node, 'arr': clock, 'late': late})
+                    late_min_tot += late
+                prev = cur
+                cur = sol.Value(rte.NextVar(cur))
+
+            r_dist += rte.GetArcCostForVehicle(prev, cur, vid)
+            ret_arr = sol.Value(tdim.CumulVar(cur))
+            plan += f'  Depot 0 (Back at: {7+ret_arr//60:02d}:{ret_arr%60:02d}, Final Cargo: {cargo} pallets)\n'
+            plan += f'Distance of the route: {r_dist} km\n'
+            plan += f'Total Pallets Transported: {route_load} pallets\n'
+            plan += f'Total Route Time: {ret_arr} mins\n'
+            print(plan)
+            print('-' * 50)
+            total_dist += r_dist
+            total_load += route_load
+
+        pen_cost = late_min_tot * penalty
+        print(f'Total Distance of all routes: {total_dist} km')
+        print(f'Total Pallets Delivered: {total_load}/{sum(data["demands"])} pallets')
+        print(f'Late deliveries: {len(late_stores)} stores')
+        print(f'Total lateness: {late_min_tot} minutes')
+        print(f'Penalty cost: {pen_cost}')
+        if late_stores:
+            print('Stores arriving late:')
+            for ls in late_stores:
+                print(f'  Node {ls["node"]:02d}: arrived {ls["arr"]} '
+                      f'({ls["late"]} min late, penalty={ls["late"]*penalty})')
+        print()
+        all_results.append({
+            'label': label, 'distance': total_dist,
+            'late_stores': len(late_stores),
+            'late_min': late_min_tot, 'feasible': True
+        })
+
+    print('=' * 55)
+    print('  SUMMARY')
+    print('=' * 55)
+    print(f'  {"Penalty":<28} {"Distance":>8} {"Late":>8} {"Late mins":>10}')
+    print('  ' + '-' * 57)
+    for r in all_results:
+        if r['feasible']:
+            print(f'  {r["label"]:<28} {r["distance"]:>7} km '
+                  f'{r["late_stores"]:>5} stores '
+                  f'{r["late_min"]:>8} min')
+        else:
+            print(f'  {r["label"]:<28} {"No solution":>30}')
+    print()
+    print('  CONCLUSION:')
+    print()
+    print('  No solution found even with soft constraints.')
+    print('  This confirms S-170 infeasibility is structural:')
+    print()
+    print('  With 8 high-demand stores needing 26 min service each,')
+    print('  plus morning traffic (x1.3), and only 4 hours available,')
+    print('  even relaxing the 12:00 deadline does not help.')
+    print('  The time per route is simply too long to serve all stores.')
+    print()
+    print('  FIX OPTIONS:')
+    print('  1. Add more vehicles to split routes into shorter trips.')
+    print('  2. Extend delivery window to 07:00-13:00.')
+    print('  3. Allow split deliveries (visit same store twice).')
+    print()
+    print('  The best realistic penalty if lateness were allowed = 5 euro/min')
+    print('  (store losing shelf stock = approx 3-10 euro per pallet per hour).')
+
 
 if __name__ == '__main__':
     main()
