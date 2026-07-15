@@ -9,18 +9,20 @@ depot in Bielefeld to Lidl stores in the OWL region.
 
 The goal is to structure the delivery problem, collect and 
 prepare input data, formulate a mathematical routing model, 
-and solve optimal delivery routes using two methods: the 
-Clarke-Wright Savings Algorithm and Google OR-Tools with 
+and compute high-quality delivery routes using two methods: the
+Clarke-Wright Savings Algorithm and Google OR-Tools with
 Guided Local Search.
 
 The model used is a Time-Dependent Heterogeneous Vehicle 
-Routing Problem with Time Windows (TDHVRPTW). Travel times 
-are adjusted using a realistic congestion multiplier μ(t) 
-based on actual time of departure at each node:
+Routing Problem with Time Windows (TDHVRPTW). 
+Travel times are adjusted using simplified time-dependent
+congestion multipliers μ(t) based on the departure time at
+each node:
 - 07:00 to 09:00 → ×1.3 (morning rush hour)
 - 09:00 to 11:30 → ×1.0 (free flow baseline)
 - 11:30 to 12:00 → ×1.1 (lunch surge)
 
+The traffic multipliers are simplified planning assumptions and are documented in detail in `Docs/traffic_data_method.md`.
 ---
 
 ## Decision Question
@@ -35,31 +37,19 @@ buffers, and maximum route duration?
 
 ## Repository Structure
 
-* `DATA/` contains collected and prepared data files, 
-  including distance and time matrices collected from 
-  Google Maps Distance Matrix API.
-* `Math formulation report/` contains the mathematical 
-  model formulation (ILP with objective function and 
-  8 constraints).
-* `Final report/` contains the full written project report.
-* `docs/` contains project explanations, assumptions, 
-  and short documentation files.
-* `Notebooks/` contains Jupyter notebooks for data 
-  exploration, model testing, and result analysis.
-* `src/` contains the main Python solver scripts:
-  - DrOetker_Lidl_Optimization_fixed.py (main solver)
-  - comparison_cw_vs_ortools.py (method comparison)
-* `Results/` contains solver outputs, route summaries, 
-  and figures for all 3 scenarios.
-* `Figures/` contains route maps, Gantt charts, load 
-  charts and comparison graphs.
+* `DATA/` contains collected and prepared data files, including the editable distance and time matrices.
+* `Docs/` contains project explanations, assumptions, model documentation, traffic-method documentation, and solver-comparison documentation.
+* `Figures/` contains route figures, comparison figures, and the Google TrafficLayer screenshot.
+* `Literature/` contains literature review files, source notes, references, and BibTeX entries.
+* `Mathematics formular/` contains the mathematical formulation documents.
 * `Presentation/` contains presentation material.
-* `Literature/` contains sources and literature notes 
-  with full academic citations.
-* `Project_management/` contains contribution logs, 
-  task overview, and meeting notes.
-* `MODEL_JUSTIFICATION.md` explains why each modelling 
-  decision was made and which academic source supports it.
+* `Results/` contains documented scenario results and method-comparison results.
+* `src/` contains the executable Python scripts, CSV input matrices, package requirements, and run instructions:
+  - `DrOetker_Lidl_Optimization_fixed.py` — main OR-Tools solver
+  - `comparison_cw_vs_ortools.py` — Clarke-Wright vs OR-Tools comparison
+  - `HOW_TO_RUN.md` — detailed run instructions
+* `Archive/` contains older conceptual project files that are kept for transparency but are not part of the active final implementation.
+* `CONTRIBUTIONS.pdf` documents the team contribution overview.
 
 ---
 
@@ -67,10 +57,13 @@ buffers, and maximum route duration?
 
 1. Install the required packages:
 
+       pip install -r src/requirements.txt
+
+   If this does not work on your system, install the main packages manually:
+
        pip install ortools numpy pandas matplotlib
 
-2. Make sure these two files are in the same folder as 
-   the script or in the DATA/ folder:
+2. Make sure these two CSV files are in the `src/` folder together with the Python scripts:
 
        distance_matrix.csv
        time_matrix.csv
@@ -83,19 +76,19 @@ buffers, and maximum route duration?
 
        CHOSEN_SCENARIO = 99    # change to 152 or 170
 
-5. Run the file:
+5. Run the file from the repository root:
 
        python src/DrOetker_Lidl_Optimization_fixed.py
 
-The output will print the routes, arrival times at each 
-store, distances, and total pallets delivered for every 
-truck used in that scenario.
+The output will print the routes, arrival times at each store, distances, and total pallets delivered for every truck used in that scenario.
 
 To run the Clarke-Wright vs OR-Tools comparison:
 
        python src/comparison_cw_vs_ortools.py
 
----
+Detailed run instructions are provided in:
+
+       src/HOW_TO_RUN.md
 
 ## Problem Setup
 
