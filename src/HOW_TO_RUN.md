@@ -1,120 +1,117 @@
-# How to Run the Full Project
+# How to Run the Code
 
-## What you need first
+This file explains how to run the Python scripts in the `src/` folder for the final Dr. Oetker → Lidl OWL routing project.
 
-Make sure you have Python installed on your computer.
-Then install the required packages by running this 
-one command in your terminal:
+The active implementation is based on the final 25-store model with:
 
-    pip install ortools numpy pandas matplotlib
-
----
-
-## The repository contains 2 Python files to run
-
----
-
-### File 1 — Main Solver (OR-Tools)
-**File:** `src/DrOetker_Lidl_Optimization.py`
-
-This is the main solver. It uses Google OR-Tools to 
-find the best delivery routes for each demand scenario.
-
-**How to run:**
-
-1. Open the file `src/DrOetker_Lidl_Optimization.py`
-2. At the top of the file, find this line:
-
-       CHOSEN_SCENARIO = 99
-
-3. Change the number to pick the scenario you want:
-   - 99  → Normal weekday (99 pallets)
-   - 152 → High volume surge day (150 pallets)
-   - 170 → Fleet stress test (174 pallets)
-
-4. Run the file:
-
-       python src/DrOetker_Lidl_Optimization.py
-
-**What you will see:**
-
-For scenario 99:
-- 4 routes, total 215 km, all 25 stores served
-
-For scenario 152:
-- 6 routes, total 220 km, all 25 stores served
-
-For scenario 170:
-- No valid solution — the solver confirms infeasibility
+* 1 Dr. Oetker depot
+* 25 Lidl stores
+* 26 total nodes
+* 4 heavy trucks with 33-pallet capacity
+* 4 medium trucks with 12-pallet capacity
+* delivery window from 08:00 to 12:00
+* service time formula `s_i = 10 + 2q_i`
+* time-dependent traffic multipliers
+* scenarios S-99, S-152, and S-170
 
 ---
 
-### File 2 — Method Comparison (Clarke-Wright vs OR-Tools)
-**File:** `src/comparison_cw_vs_ortools.py`
+## 1. Install Requirements
 
-This file runs Clarke-Wright and documents the OR-Tools
-results side by side. It proves the 30% distance 
-improvement claim made in the report.
+From the repository root, install the required Python packages:
 
-No extra installation needed beyond what is listed above.
+`pip install -r src/requirements.txt`
 
-**How to run:**
+If the requirements file does not work on your system, install the main packages manually:
 
-    python src/comparison_cw_vs_ortools.py
-
-**What you will see:**
-
-1. Top 10 savings values computed by Clarke-Wright
-2. Clarke-Wright routes — live computation — 308.1 km
-3. OR-Tools verified routes — 215 km
-4. Side-by-side comparison table showing 30.2% improvement
-5. A figure saved as comparison_cw_vs_ortools.png 
-   in the same folder
+`pip install ortools pandas numpy matplotlib`
 
 ---
 
-## Data files
+## 2. Run the Main OR-Tools Solver
 
-Both scripts read from the same data.
-Make sure these two files are in your DATA/ folder:
+The main solver file is:
 
-    DATA/distance_matrix.csv
-    DATA/time_matrix.csv
+`src/DrOetker_Lidl_Optimization_fixed.py`
 
-These are the real 26x26 matrices collected from 
-Google Maps for the OWL road network 
-(depot + 25 Lidl stores).
+Run it from the repository root with:
+
+`python src/DrOetker_Lidl_Optimization_fixed.py`
 
 ---
 
-## Expected results summary
+## 3. Change the Scenario
 
-| Script | Scenario | Result |
-|--------|----------|--------|
-| DrOetker_Lidl_Optimization.py | S-99 | 215 km, 4 routes |
-| DrOetker_Lidl_Optimization.py | S-152 | 220 km, 6 routes |
-| DrOetker_Lidl_Optimization.py | S-170 | Infeasible |
-| comparison_cw_vs_ortools.py | S-99 | CW: 308 km vs OR: 215 km |
+Inside `DrOetker_Lidl_Optimization_fixed.py`, change the scenario value:
+
+`CHOSEN_SCENARIO = 99`
+
+Possible values are:
+
+| Scenario value | Meaning                    |      Demand |
+| -------------: | -------------------------- | ----------: |
+|           `99` | Normal weekday baseline    |  99 pallets |
+|          `152` | High-volume surge scenario | 150 pallets |
+|          `170` | Fleet stress-test scenario | 174 pallets |
+
+After changing the value, save the file and run the solver again.
 
 ---
 
-## If something does not work
+## 4. Current Documented Scenario Results
 
-The most common issue is a missing package.
-Run this command to install everything at once:
+The currently documented final results are:
 
-    pip install ortools numpy pandas matplotlib
+| Scenario | Result                                                                                      |
+| -------- | ------------------------------------------------------------------------------------------- |
+| S-99     | Feasible, 241 km total distance                                                             |
+| S-152    | Feasible, 286 km total distance                                                             |
+| S-170    | No feasible hard-window solution found under the implemented model and search configuration |
 
-If you see a message saying the data file is not found,
-make sure you are running the script from the root 
-folder of the repository, not from inside the src/ folder.
+Important: S-170 should not be described as mathematically “proven infeasible.” The correct statement is that no feasible hard-window solution was found under the implemented constraints, search configuration, and time limit.
 
-You can do this by opening your terminal in the 
-repository folder and typing:
+---
 
-    python src/DrOetker_Lidl_Optimization.py
+## 5. Run the Clarke-Wright vs OR-Tools Comparison
 
-not:
+The comparison script is:
 
-    cd src
-    python DrOetker_Lidl_Optimization.py
+`src/comparison_cw_vs_ortools.py`
+
+Run it from the repository root with:
+
+`python src/comparison_cw_vs_ortools.py`
+
+The current documented S-99 comparison is:
+
+| Method                |         Total distance |
+| --------------------- | ---------------------: |
+| Clarke-Wright Savings |               308.1 km |
+| OR-Tools GLS          |                 241 km |
+| Improvement           | 21.8% shorter distance |
+
+Clarke-Wright is used as a constructive heuristic baseline. OR-Tools with Guided Local Search is used as the stronger routing search method.
+
+OR-Tools GLS should not be described as an exact solver. It provides a high-quality solution found by the implemented search configuration.
+
+---
+
+## 6. Input Files Used by the Scripts
+
+The scripts use the CSV matrix files stored in the same folder:
+
+* `src/distance_matrix.csv`
+* `src/time_matrix.csv`
+
+The editable `.ods` versions are stored in the `DATA/` folder for documentation and checking.
+
+---
+
+## 7. Notes for Reproducibility
+
+Run the scripts from the repository root so that the relative file paths work correctly.
+
+The final project documentation should use the same result values as this file, the root `README.md`, and `Results/results.md`.
+
+Outdated result values such as 215 km or 220 km should no longer be used.
+
