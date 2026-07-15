@@ -479,7 +479,7 @@ def print_comparison(cw_routes, cw_dist, cw_ms, ort_routes, ort_dist):
         ("All routes feasible",    "Yes",                        "Yes"),
         ("Computation time",       f"{cw_ms:.2f} ms",           "< 30 seconds"),
         ("Algorithm type",         "Constructive heuristic",    "Metaheuristic (GLS)"),
-        ("Optimality guarantee",   "None (greedy merges)",      "Near-optimal"),
+        ("Optimality guarantee",   "None (greedy merges)",      "No formal proof"),
         ("Transparency",           "Fully traceable",           "Black-box solver"),
         ("Best use case",          "Education / speed",         "Production routing"),
     ]

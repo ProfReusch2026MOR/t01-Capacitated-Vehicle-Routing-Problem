@@ -177,13 +177,15 @@ All 25 stores served. All routes completed within constraints.
 
 All 25 stores served. All routes completed within constraints.
 
-### Scenario S-170 — Infeasible
+### Scenario S-170 — No feasible hard-window solution found
 
-The solver confirmed no valid solution exists.
-Fleet has enough volume capacity (174/180 pallets = 96.7%)
-but time constraints make a feasible schedule impossible.
-The combination of higher service times, morning congestion,
-and the hard 08:00-12:00 delivery window prevents scheduling.
+No feasible solution was found under the implemented hard-window model, search configuration, and time limit.
+
+The fleet has enough nominal volume capacity:
+
+`174 / 180 pallets = 96.7%`
+
+However, the combination of higher service times, morning congestion, the hard 08:00–12:00 delivery window, and the maximum route-duration constraint prevented the implemented solver from constructing a feasible schedule under the current assumptions.
 
 Full console outputs for all three scenarios are saved 
 in the Results/ folder.
@@ -194,10 +196,10 @@ in the Results/ folder.
 
 Both methods applied to Scenario S-99 (99 pallets):
 
-| Method | Total Distance | Time | Optimality |
-|--------|---------------|------|------------|
-| Clarke-Wright Savings | 308.1 km | < 1 ms | No guarantee |
-| OR-Tools GLS (realistic) | 241 km | < 30 sec | Near-optimal |
+| Method | Total Distance | Time | Interpretation |
+|--------|---------------|------|----------------|
+| Clarke-Wright Savings | 308.1 km | < 1 ms | Constructive heuristic baseline |
+| OR-Tools GLS | 241 km | < 30 sec | Stronger search result, no formal optimality proof |
 | Improvement | 21.8% shorter | — | — |
 
 Full comparison output available by running:
