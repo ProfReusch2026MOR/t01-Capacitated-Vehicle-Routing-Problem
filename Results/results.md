@@ -99,17 +99,16 @@ Depot 07:00 → L01@08:00 (6p) → L08@08:32 (6p)
 ## SCENARIO S-170 — Fleet Stress Test
 
 Total demand: 174 pallets
-Result: INFEASIBLE
+Result: No feasible hard-window solution found
 
 Solver output:
 "No valid schedule path satisfies the combined
 constraints under the 170-pallet scenario."
 
-The fleet has enough volume capacity:
+The fleet has enough nominal volume capacity:
 174 pallets demand vs 180 pallets fleet capacity = 96.7%
 
-However the time constraints make a valid schedule
-impossible. Reasons:
+However, the implemented solver did not find a valid schedule under the current hard time-window, traffic, service-time, fleet-capacity, and route-duration assumptions. The main limiting factor is time feasibility rather than pure pallet capacity. Reasons:
 
 | Driver | Explanation |
 |--------|-------------|
@@ -131,20 +130,20 @@ To make S-170 feasible:
 |----------|--------|----------|----------|------------|-------------|----------|
 | S-99 | 99p | 241 km | 4 | 4 | 0 | Yes |
 | S-152 | 150p | 286 km | 6 | 4 | 2 | Yes |
-| S-170 | 174p | — | — | — | — | No |
+| S-170 | 174p | — | — | — | — | No feasible hard-window solution found |
 
 ---
 
 ## Method Comparison: Clarke-Wright vs OR-Tools GLS
 
-Both methods run on Scenario S-99 with identical data.
-Clarke-Wright results computed live by comparison_cw_vs_ortools.py.
-OR-Tools results from DrOetker_Lidl_Optimization_REALISTIC.py.
+Both methods are compared on Scenario S-99 with identical input data.
 
-| Method | Distance | Time | Optimality |
-|--------|----------|------|------------|
-| Clarke-Wright Savings | 308.1 km | < 1 ms | No guarantee |
-| OR-Tools GLS realistic | 241 km | < 30 sec | Near-optimal |
+Clarke-Wright Savings is used as a constructive heuristic baseline. OR-Tools with `PATH_CHEAPEST_ARC` and `GUIDED_LOCAL_SEARCH` is used as the stronger routing search method.
+
+| Method | Distance | Time | Interpretation |
+|--------|----------|------|----------------|
+| Clarke-Wright Savings | 308.1 km | < 1 ms | Constructive heuristic baseline |
+| OR-Tools GLS | 241 km | < 30 sec | Stronger search result, no formal optimality proof |
 | Improvement | 21.8% shorter | — | — |
 
 The 21.8% improvement is consistent with findings in
@@ -152,24 +151,28 @@ Cordeau et al. (2002, JORS 53(5), p.516) who report
 metaheuristic improvement of 10-30% over constructive
 heuristics on medium VRP instances.
 
-## S-170 Soft Constraint Analysis
+## S-170 Constraint Diagnosis
 
-We investigated which constraint causes S-170 infeasibility
-by testing soft time windows with three penalty values.
+The S-170 scenario was used as a stress test to identify which part of the model becomes binding under high demand.
 
-Result: No solution found even with soft constraints.
+The result suggests that the feasibility problem is not caused by total pallet capacity alone. The fleet has 180 pallets of nominal capacity, while S-170 requires 174 pallets. The critical issue is the interaction between:
 
-Scientific explanation:
-- Total service time for 25 stores at 7-8 pallets = 598 min
-- Each vehicle has 240 min active delivery window (08:00-12:00)
-- Each vehicle can complete maximum 3-4 stops before time runs out
-- 8 vehicles x 4 stops = 32 route slots < 25 stores required
-- Soft constraints relax the penalty but do not add minutes to the clock
+- high service times caused by larger pallet volumes,
+- the hard 08:00–12:00 delivery window,
+- morning traffic multipliers,
+- the 405-minute maximum route-duration limit,
+- and the limited number of available vehicles.
 
-Proven fix: Adding 3 medium trucks (12p each) makes S-170 feasible.
-With 11 vehicles the solver finds a valid solution at 321 km.
-(Tested and verified by the solver — see src/DrOetker_Lidl_Optimization_fixed.py)
+A soft-time-window formulation was considered as a possible extension. In such a model, late deliveries would be allowed but penalized in the objective function. This would help test whether a small amount of lateness could make the stress scenario operationally feasible.
 
-Reference: Solomon (1987, OR 35(2), p.260) — hard time windows cannot
-be resolved by penalty relaxation alone when service time density
-exceeds available route duration per vehicle.
+This extension is not part of the main final result unless a separate solver output is documented. Therefore, the current final interpretation remains:
+
+> No feasible hard-window solution was found for S-170 under the implemented model, search configuration, and time limit.
+
+Possible operational responses include:
+
+- adding vehicle capacity,
+- extending the delivery window,
+- reducing route-duration buffers,
+- allowing split deliveries,
+- or introducing soft time windows with calibrated lateness penalties.
