@@ -178,12 +178,12 @@ def realistic_travel_time(i, j, t_model):
     return TIME[i][j] * traffic_multiplier(t_model)
 
 # ─────────────────────────────────────────────────────────
-#  ROUTE FEASIBILITY CHECK WITH REALISTIC TRAFFIC
+#  ROUTE FEASIBILITY CHECK WITH TIME-DEPENDENT TRAFFIC
 # ─────────────────────────────────────────────────────────
 
 def check_route(route, capacity):
     """
-    Simulate a route with realistic time-dependent traffic.
+    Simulate a route with simplified time-dependent traffic.
     Returns (feasible, arrivals_dict, total_duration_minutes)
     """
     load = sum(DEMANDS[c] for c in route)
@@ -196,7 +196,7 @@ def check_route(route, capacity):
     arrivals = {}
 
     for c in route:
-        # Apply realistic congestion at departure time
+        # Apply the traffic multiplier at departure time
         tt = realistic_travel_time(prev, c, t_model)
         t_model += tt
         t_clock += tt
@@ -218,7 +218,7 @@ def check_route(route, capacity):
         t_clock += SERVICE[c]
         prev = c
 
-    # Return to depot with realistic congestion
+    # Return to depot with the traffic multiplier
     tt_ret  = realistic_travel_time(prev, 0, t_model)
     t_model += tt_ret
 
@@ -237,7 +237,7 @@ def route_distance(route):
     return round(d, 1)
 
 # ─────────────────────────────────────────────────────────
-#  METHOD A — CLARKE-WRIGHT SAVINGS (REALISTIC TRAFFIC)
+#  METHOD A — CLARKE-WRIGHT SAVINGS (TIME-DEPENDENT TRAFFIC)
 # ─────────────────────────────────────────────────────────
 
 def run_clarke_wright():
@@ -245,7 +245,7 @@ def run_clarke_wright():
     print("  METHOD A — CLARKE-WRIGHT SAVINGS ALGORITHM")
     print("  Clarke & Wright (1964), Operations Research 12(4)")
     print("  Traffic model: time-dependent mu(t) step function")
-    print("  (same as DrOetker_Lidl_Optimizationpy)")
+    print("  (same as DrOetker_Lidl_Optimization.py)")
     print("="*62)
 
     t_start = time.time()
@@ -270,7 +270,7 @@ def run_clarke_wright():
     route_of = {c: c   for c in CUSTOMERS}
     print(f"\n  Step 2: Initialised {len(CUSTOMERS)} singleton routes")
 
-    # Step 3 — merge using savings list with realistic traffic check
+    # Step 3 — merge using savings list with time-dependent traffic check
     merges = 0
     for s, i, j in savings:
         ri = route_of[i]
@@ -368,17 +368,17 @@ def run_clarke_wright():
 
 def run_ortools_documented():
     """
-    Documented output from DrOetker_Lidl_Optimization_fixed.py
+    Documented output from DrOetker_Lidl_Optimization.py
     CHOSEN_SCENARIO = 99
     Traffic: time-dependent mu(t) via CumulVar().Min() in OR-Tools
-    Solver: PATH_CHEAPEST_ARC + Guided Local Search, 30s limit
-    GLS lambda coefficient: 0.1
+    Solver: PATH_CHEAPEST_ARC + Guided Local Search
+    Search configuration: see DrOetker_Lidl_Optimization.py
     """
     print("\n" + "="*62)
     print("  METHOD B — OR-TOOLS GLS (Documented Solver Output)")
     print("  Source: DrOetker_Lidl_Optimization.py")
     print("  Strategy: PATH_CHEAPEST_ARC + Guided Local Search")
-    print("  Time limit: 30 seconds | GLS lambda: 0.1")
+    print("  Search configuration: see DrOetker_Lidl_Optimization.py")
     print("  Traffic: time-dependent mu(t) via CumulVar().Min()")
     print("  Scenario: S-99 (99 pallets)")
     print("="*62)

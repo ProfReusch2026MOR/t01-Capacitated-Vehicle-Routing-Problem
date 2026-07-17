@@ -446,7 +446,7 @@ def main():
         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
     search_parameters.local_search_metaheuristic = (
         routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH)
-    search_parameters.time_limit.seconds = 10  # Extended to 10s to ensure 170-pallet convergence
+    search_parameters.time_limit.seconds = 10  # Search time limit for the final scenario tests
 
     solution = routing.SolveWithParameters(search_parameters)
 
@@ -651,20 +651,21 @@ def run_soft_constraint_analysis(original_data):
     print()
     print('  CONCLUSION:')
     print()
-    print('  No solution found even with soft constraints.')
-    print('  This confirms S-170 infeasibility is structural:')
+    print('  This diagnostic checks whether relaxing the 12:00 deadline')
+    print('  and adding one extra medium truck can produce a feasible plan.')
+    print('  The results above should be interpreted as an exploratory')
+    print('  stress-test extension, not as part of the main final results.')
     print()
-    print('  With 8 high-demand stores needing 26 min service each,')
-    print('  plus morning traffic (x1.3), and only 4 hours available,')
-    print('  even relaxing the 12:00 deadline does not help.')
-    print('  The time per route is simply too long to serve all stores.')
+    print('  Main final interpretation:')
+    print('  No feasible hard-window solution was found under the implemented')
+    print('  model, search configuration, and time limit.')
     print()
     print('  FIX OPTIONS:')
     print('  1. Add more vehicles to split routes into shorter trips.')
     print('  2. Extend delivery window to 07:00-13:00.')
     print('  3. Allow split deliveries (visit same store twice).')
     print()
-    print('  The best realistic penalty if lateness were allowed = 5 euro/min')
+    print('  Example medium penalty if lateness were allowed = 5 euro/min')
     print('  (store losing shelf stock = approx 3-10 euro per pallet per hour).')
 
 
