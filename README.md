@@ -255,7 +255,7 @@ https://doi.org/10.1002/net.21901
 Mor, A. and Speranza, M.G. (2022). Vehicle routing problems
 over time: a survey. Annals of Operations Research,
 314, 255-275.
-https://doi.org/10.1007/s10479-021-04times
+https://doi.org/10.1007/s10479-021-04488-0
 
 Shaheen, S. and Cohen, A. (2020). Shared mobility policy
 playbook. Transportation Sustainability Research Center,
