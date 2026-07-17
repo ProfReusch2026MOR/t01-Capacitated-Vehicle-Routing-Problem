@@ -226,7 +226,7 @@ portion of the solution space and escaping local optima
 
 Note on solution time: the 30 second figure is not merely
 the configured search time limit reported optimistically;
-we independently re-ran `src/DrOetker_Lidl_Optimization_fixed.py`
+we independently re-ran `src/DrOetker_Lidl_Optimization.py`
 for Scenario S-99 and measured the actual wall-clock solve
 time directly, confirming it consistently uses the full
 30 second budget (measured at 30.0-30.5 seconds across

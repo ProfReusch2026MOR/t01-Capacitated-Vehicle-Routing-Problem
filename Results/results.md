@@ -1,7 +1,7 @@
 # Computational Results — TDHVRPTW Realistic Solver Output
 
 All results produced by:
-src/DrOetker_Lidl_Optimization_fixed.py
+src/DrOetker_Lidl_Optimization.py
 
 Solver: Google OR-Tools
 Strategy: PATH_CHEAPEST_ARC initialisation + Guided Local Search

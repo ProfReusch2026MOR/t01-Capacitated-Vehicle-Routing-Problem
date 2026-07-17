@@ -165,5 +165,5 @@ Because this project uses fixed multipliers, the final results should be interpr
 | `Figures/google_traffic_layer_bielefeld.png` | Screenshot of the Google traffic overlay around Bielefeld / OWL |
 | `DATA/time matrix.ods` | Editable baseline travel-time matrix |
 | `src/time_matrix.csv` | CSV travel-time matrix used by the Python scripts |
-| `src/DrOetker_Lidl_Optimization_fixed.py` | Python implementation where the time-dependent traffic multipliers are applied |
+| `src/DrOetker_Lidl_Optimization.py` | Python implementation where the time-dependent traffic multipliers are applied |
 | `Docs/traffic_data_method.md` | Explanation of how traffic is considered in the model |

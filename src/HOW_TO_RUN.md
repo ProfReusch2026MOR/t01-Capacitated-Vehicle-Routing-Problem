@@ -32,17 +32,17 @@ If the requirements file does not work on your system, install the main packages
 
 The main solver file is:
 
-`src/DrOetker_Lidl_Optimization_fixed.py`
+`src/DrOetker_Lidl_Optimization.py`
 
 Run it from the repository root with:
 
-`python src/DrOetker_Lidl_Optimization_fixed.py`
+`python src/DrOetker_Lidl_Optimization.py`
 
 ---
 
 ## 3. Change the Scenario
 
-Inside `DrOetker_Lidl_Optimization_fixed.py`, change the scenario value:
+Inside `DrOetker_Lidl_Optimization.py`, change the scenario value:
 
 `CHOSEN_SCENARIO = 99`
 

@@ -45,7 +45,7 @@ buffers, and maximum route duration?
 * `Presentation/` contains presentation material.
 * `Results/` contains documented scenario results and method-comparison results.
 * `src/` contains the executable Python scripts, CSV input matrices, package requirements, and run instructions:
-  - `DrOetker_Lidl_Optimization_fixed.py` — main OR-Tools solver
+  - `DrOetker_Lidl_Optimization.py` — main OR-Tools solver
   - `comparison_cw_vs_ortools.py` — Clarke-Wright vs OR-Tools comparison
   - `HOW_TO_RUN.md` — detailed run instructions
 * `Archive/` contains older conceptual project files that are kept for transparency but are not part of the active final implementation.
@@ -70,7 +70,7 @@ buffers, and maximum route duration?
 
 3. Open the main solver file:
 
-       src/DrOetker_Lidl_Optimization_fixed.py
+       src/DrOetker_Lidl_Optimization.py
 
 4. Set the scenario you want to test at the top of the file:
 
@@ -78,7 +78,7 @@ buffers, and maximum route duration?
 
 5. Run the file from the repository root:
 
-       python src/DrOetker_Lidl_Optimization_fixed.py
+       python src/DrOetker_Lidl_Optimization.py
 
 The output will print the routes, arrival times at each store, distances, and total pallets delivered for every truck used in that scenario.
 

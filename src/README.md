@@ -23,7 +23,7 @@ The current implementation uses:
 
 | File                                  | Purpose                                                                                                               |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `DrOetker_Lidl_Optimization_fixed.py` | Main OR-Tools routing implementation for the three demand scenarios                                                   |
+| `DrOetker_Lidl_Optimization.py` | Main OR-Tools routing implementation for the three demand scenarios                                                   |
 | `comparison_cw_vs_ortools.py`         | Clarke-Wright Savings baseline and comparison with the OR-Tools result for Scenario S-99                              |
 | `distance_matrix.csv`                 | 26×26 road-distance matrix used by the Python scripts                                                                 |
 | `time_matrix.csv`                     | 26×26 baseline travel-time matrix used by the Python scripts                                                          |
@@ -38,7 +38,7 @@ The current implementation uses:
 
 The main solver file is:
 
-`DrOetker_Lidl_Optimization_fixed.py`
+`DrOetker_Lidl_Optimization.py`
 
 It uses Google OR-Tools with:
 
@@ -143,7 +143,7 @@ Install the required packages from the repository root:
 
 Run the main solver:
 
-`python src/DrOetker_Lidl_Optimization_fixed.py`
+`python src/DrOetker_Lidl_Optimization.py`
 
 Run the Clarke-Wright vs OR-Tools comparison:
 
