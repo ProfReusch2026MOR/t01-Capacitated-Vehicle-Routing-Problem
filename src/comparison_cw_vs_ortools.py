@@ -1,7 +1,7 @@
 """
 ============================================================
   COMPARISON: Clarke-Wright vs OR-Tools GLS
-  REALISTIC TRAFFIC MODEL — matches DrOetker_Lidl_Optimization_REALISTIC.py
+    TIME-DEPENDENT TRAFFIC MODEL — matches DrOetker_Lidl_Optimization.py
 
   Traffic model: mu(t) step function
     07:00-09:00 (t=0 to 120 min)   -> x1.3  morning rush
@@ -11,7 +11,7 @@
   Clarke-Wright: applies mu(t) based on estimated departure
                  time at each node during route simulation
   OR-Tools GLS:  results taken from verified solver output
-                 (DrOetker_Lidl_Optimization_REALISTIC.py)
+                 (DrOetker_Lidl_Optimization.py)
 
   Both methods use IDENTICAL input data:
     - Same 26x26 distance matrix (Google Maps)
@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
 # ─────────────────────────────────────────────────────────
-#  REAL DATA — identical to DrOetker_Lidl_Optimization_REALISTIC.py
+#  REAL DATA — identical to DrOetker_Lidl_Optimization.py
 # ─────────────────────────────────────────────────────────
 
 NODE_NAMES = {
@@ -150,16 +150,16 @@ MAX_ROUTE  = 405   # minutes
 SERVICE    = {i: 10 + 2 * DEMANDS[i] for i in CUSTOMERS}
 
 # ─────────────────────────────────────────────────────────
-#  REALISTIC CONGESTION MODEL
-#  Identical step function to DrOetker_Lidl_Optimization_REALISTIC.py
+#  #  TIME-DEPENDENT TRAFFIC MODEL
+#  Same step-function multiplier as DrOetker_Lidl_Optimization.py
 # ─────────────────────────────────────────────────────────
 
 def traffic_multiplier(departure_minute):
     """
-    Realistic time-dependent congestion multiplier.
+    Simplified time-dependent traffic multiplier.
     departure_minute = minutes elapsed since 07:00 departure.
-    Matches exactly the traffic_multiplier() function in
-    DrOetker_Lidl_Optimization_REALISTIC.py
+    Matches the traffic_multiplier() function in
+    DrOetker_Lidl_Optimization.py
     """
     if 0 <= departure_minute < 120:      # 07:00-09:00 morning rush
         return 1.3
@@ -173,7 +173,7 @@ def realistic_travel_time(i, j, t_model):
     """
     Time-dependent travel time from i to j.
     t_model = minutes elapsed since 07:00.
-    Applies realistic congestion multiplier at departure time.
+    Applies the simplified traffic multiplier at departure time.
     """
     return TIME[i][j] * traffic_multiplier(t_model)
 
@@ -244,8 +244,8 @@ def run_clarke_wright():
     print("\n" + "="*62)
     print("  METHOD A — CLARKE-WRIGHT SAVINGS ALGORITHM")
     print("  Clarke & Wright (1964), Operations Research 12(4)")
-    print("  Traffic model: realistic mu(t) step function")
-    print("  (same as DrOetker_Lidl_Optimization_REALISTIC.py)")
+    print("  Traffic model: time-dependent mu(t) step function")
+    print("  (same as DrOetker_Lidl_Optimizationpy)")
     print("="*62)
 
     t_start = time.time()
@@ -315,7 +315,7 @@ def run_clarke_wright():
     elapsed  = (t_end - t_start) * 1000
 
     print(f"  Step 3: Performed {merges} successful merges")
-    print(f"          (feasibility checked with realistic mu(t) traffic)")
+    print(f"          (feasibility checked with time-dependent mu(t) traffic)")
 
     # Build final results
     final_routes = list(routes.values())
@@ -363,23 +363,23 @@ def run_clarke_wright():
     return results, total_dist, elapsed
 
 # ─────────────────────────────────────────────────────────
-#  METHOD B — OR-TOOLS GLS (verified realistic output)
+#  METHOD B — OR-TOOLS GLS (documented solver output)
 # ─────────────────────────────────────────────────────────
 
 def run_ortools_documented():
     """
-    Verified output from DrOetker_Lidl_Optimization_REALISTIC.py
+    Documented output from DrOetker_Lidl_Optimization_fixed.py
     CHOSEN_SCENARIO = 99
-    Traffic: realistic mu(t) via CumulVar().Min() in OR-Tools
+    Traffic: time-dependent mu(t) via CumulVar().Min() in OR-Tools
     Solver: PATH_CHEAPEST_ARC + Guided Local Search, 30s limit
     GLS lambda coefficient: 0.1
     """
     print("\n" + "="*62)
-    print("  METHOD B — OR-TOOLS GLS (Verified Realistic Output)")
-    print("  Source: DrOetker_Lidl_Optimization_REALISTIC.py")
+    print("  METHOD B — OR-TOOLS GLS (Documented Solver Output)")
+    print("  Source: DrOetker_Lidl_Optimization.py")
     print("  Strategy: PATH_CHEAPEST_ARC + Guided Local Search")
     print("  Time limit: 30 seconds | GLS lambda: 0.1")
-    print("  Traffic: realistic mu(t) via CumulVar().Min()")
+    print("  Traffic: time-dependent mu(t) via CumulVar().Min()")
     print("  Scenario: S-99 (99 pallets)")
     print("="*62)
 
@@ -470,7 +470,7 @@ def print_comparison(cw_routes, cw_dist, cw_ms, ort_routes, ort_dist):
     print(f"  {'-'*76}")
 
     rows = [
-        ("Traffic model",          "Realistic mu(t) step fn",  "Realistic mu(t) CumulVar"),
+        ("Traffic model",          "Time-dependent mu(t)",     "Time-dependent mu(t)"),
         ("Total distance (km)",    f"{cw_dist:.1f} km",         f"{ort_dist} km"),
         ("Distance improvement",   "Reference baseline",        f"-{improvement:.1f}% shorter"),
         ("Vehicles used",          str(len(cw_routes)),          str(len(ort_routes))),
@@ -492,7 +492,7 @@ def print_comparison(cw_routes, cw_dist, cw_ms, ort_routes, ort_dist):
     print(f"  OR-Tools GLS achieves {improvement:.1f}% shorter total distance than")
     print(f"  Clarke-Wright ({ort_dist} km vs {cw_dist:.1f} km) on Scenario S-99.")
     print(f"")
-    print(f"  Both methods use the SAME realistic traffic model.")
+    print(f"  Both methods use the SAME time-dependent traffic model.")
     print(f"  The difference comes purely from the optimisation quality:")
     print(f"  Clarke-Wright makes greedy decisions that cannot be reversed.")
     print(f"  OR-Tools GLS explores many alternative routes and keeps the best.")
@@ -521,7 +521,7 @@ def plot_comparison(cw_routes, ort_routes, cw_dist, ort_dist):
     fig.patch.set_facecolor('#FFFFFF')
     fig.suptitle(
         'Clarke-Wright vs OR-Tools GLS — Scenario S-99 (99 pallets)\n'
-        'Realistic Time-Dependent Traffic Model  μ(t): ×1.3 rush / ×1.0 free-flow / ×1.1 lunch',
+        'Time-Dependent Traffic Model  μ(t): ×1.3 peak / ×1.0 baseline / ×1.1 late morning',
         fontsize=13, fontweight='bold', y=1.02
     )
 
@@ -529,7 +529,7 @@ def plot_comparison(cw_routes, ort_routes, cw_dist, ort_dist):
         axes[:2],
         [cw_routes, ort_routes],
         [f'Clarke-Wright\nTotal: {cw_dist:.1f} km',
-         f'OR-Tools GLS (Realistic)\nTotal: {ort_dist} km'],
+         f'OR-Tools GLS\nTotal: {ort_dist} km'],
         [cw_dist, ort_dist]
     ):
         ax.set_facecolor('#F0F4F8')
@@ -575,7 +575,7 @@ def plot_comparison(cw_routes, ort_routes, cw_dist, ort_dist):
     # Bar chart comparison
     ax = axes[2]
     ax.set_facecolor('#F8F9FA')
-    methods   = ['Clarke-Wright\n(Constructive)', 'OR-Tools GLS\n(Realistic)']
+    methods   = ['Clarke-Wright\n(Constructive)', 'OR-Tools GLS']
     distances = [cw_dist, ort_dist]
     bar_cols  = ['#1E88E5', '#43A047']
     bars      = ax.bar(methods, distances, color=bar_cols, edgecolor='white', width=0.45)
@@ -652,12 +652,12 @@ def print_reproducibility(cw_dist, ort_dist):
 
   OR-Tools GLS results ({ort_dist} km):
     Verified output from running:
-        DrOetker_Lidl_Optimization_REALISTIC.py
+        DrOetker_Lidl_Optimization.py
     with CHOSEN_SCENARIO = 99
 
     To reproduce OR-Tools results independently:
         pip install ortools numpy pandas matplotlib
-        python DrOetker_Lidl_Optimization_REALISTIC.py
+        python DrOetker_Lidl_Optimization.py
 
   Both methods use identical input data:
     - 26x26 distance matrix (Google Maps, OWL region)
@@ -675,10 +675,10 @@ def print_reproducibility(cw_dist, ort_dist):
 
 if __name__ == '__main__':
     print("\n" + "#"*62)
-    print("#  TDHVRPTW — METHOD COMPARISON (REALISTIC TRAFFIC)")
+    print("#  TDHVRPTW — METHOD COMPARISON (TIME-DEPENDENT TRAFFIC)")
     print("#  Dr. Oetker -> 25 Lidl Stores (OWL Region)")
     print("#  Scenario S-99: 99 pallets | 4H + 4M fleet")
-    print("#  Traffic: mu(t) realistic step function")
+    print("#  Traffic: mu(t) time-dependent step function")
     print("#"*62)
 
     print_top_savings()
