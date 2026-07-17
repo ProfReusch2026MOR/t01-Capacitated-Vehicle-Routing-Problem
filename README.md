@@ -103,8 +103,8 @@ Detailed run instructions are provided in:
   08:00 and 12:00 (hard time windows)
 * Maximum route duration: 405 minutes per truck
 * Service time at each store: s = 10 + 2 × demand (min)
-* Traffic model: realistic time-dependent congestion
-  multiplier μ(t) applied to all travel times
+* Traffic model: simplified time-dependent congestion
+  multipliers μ(t) applied to baseline travel times
 
 ---
 
@@ -136,9 +136,9 @@ Detailed run instructions are provided in:
 
 ## Results
 
-The solver was run for all three scenarios using Google 
-OR-Tools with Guided Local Search (30 second time limit) 
-and a realistic time-dependent traffic model.
+The solver was run for all three scenarios using Google
+OR-Tools with Guided Local Search, the implemented search
+configuration, and simplified time-dependent traffic multipliers.
 
 | Scenario | Pallets | Total Distance | Trucks Used | Feasible |
 |----------|---------|----------------|-------------|----------|
@@ -180,8 +180,8 @@ The fleet has enough nominal volume capacity:
 
 However, the combination of higher service times, morning congestion, the hard 08:00–12:00 delivery window, and the maximum route-duration constraint prevented the implemented solver from constructing a feasible schedule under the current assumptions.
 
-Full console outputs for all three scenarios are saved 
-in the Results/ folder.
+Scenario summaries and method-comparison results are documented
+in the `Results/` folder.
 
 ---
 
@@ -206,10 +206,10 @@ python src/comparison_cw_vs_ortools.py
   Google Maps and added to DATA/
 * Demand estimation research completed and documented
 * Mathematical formulation report completed
-* Realistic time-dependent traffic model implemented
+* Simplified time-dependent traffic model implemented
 * Python solver implemented using OR-Tools GLS
 * Clarke-Wright comparison implemented and documented
-* All three scenarios solved and results documented
+* All three scenarios tested and results documented
 * Figures and route maps generated
 * Final report written
 * Presentation completed
