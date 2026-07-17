@@ -54,11 +54,22 @@ Older 11-store, 24-store, and 28-store drafts are archived and should not be use
 | Column | Data type | Unit | Meaning |
 |---|---|---|---|
 | `vehicle_id` | integer | - | Unique vehicle ID |
-| `vehicle_type` | text | - | Heavy, medium, or low-capacity vehicle |
+| `vehicle_type` | text | - | Heavy or medium vehicle used in the implemented model |
 | `capacity_pallets` | integer | pallets | Maximum pallet load |
 | `max_route_duration_min` | integer | minutes | Maximum allowed route time |
-| `fixed_cost_eur` | float | euros | Optional fixed vehicle cost |
-| `cost_per_km` | float | euros/km | Distance-based transport cost |
+| `fixed_cost_eur` | float | euros | Optional documentation or future-extension field; not used in the final implemented objective |
+| `cost_per_km` | float | euros/km | Optional documentation or future-extension field; the final implementation minimizes total distance |
+
+The final implemented fleet uses two vehicle capacity classes:
+
+| Vehicle class | Number available | Capacity |
+|---|---:|---:|
+| Heavy truck | 4 | 33 pallets |
+| Medium truck | 4 | 12 pallets |
+
+The final implementation does not use a low-capacity vehicle class.
+
+The active solver objective is total driven distance. Monetary vehicle costs are not part of the final implemented objective.
 
 ## 6. Distance and Travel-Time Matrix
 
